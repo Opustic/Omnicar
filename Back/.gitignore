@@ -1,0 +1,31 @@
+# Laravel
+/vendor
+/node_modules
+/public/storage
+/storage/*.key
+.env
+.phpunit.result.cache
+Homestead.yaml
+Homestead.json
+/.idea
+/.vscode
+/.DS_Store
+
+# Laravel Mix / Vite
+/public/hot
+/public/build
+/build
+npm-debug.log
+yarn-error.log
+
+# OS & IDE
+Thumbs.db
+.DS_Store
+*.sublime-workspace
+*.sublime-project
+
+# Composer
+composer.lock
+
+# Logs
+/storage/logs

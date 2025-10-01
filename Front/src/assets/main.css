@@ -1,0 +1,238 @@
+/* ============================================
+    IMPORTATIONS
+   ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+
+/* ============================================
+    VARIABLES CSS
+   ============================================ */
+:root {
+    /* 🎨 Palette de couleurs */
+    --color-primary: #1e1a52;
+    --color-primary-hover: #363064;
+    --color-primary-active: #25204D;
+    --color-secondary: #f5f5f7;
+    --color-accent-green: #28a746f0;
+    --color-accent-red: #dc3545;
+    --color-accent-purple: #4b2aad;
+    --color-text-dark: #1a1a1a;
+    --color-text-light: #6c757d;
+    --color-white: #ffffff;
+    --color-border: #e0e0e0;
+    --color-background: #f3f1f1;
+
+    /* 🅰 Polices */
+    --font-title-large: 'Bubblegum Sans', cursive;
+    --font-title-small: 'Ubuntu', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    
+    /* 🔠 Tailles de police */
+    --text-xl: 2rem;
+    --text-lg: 1.5rem;
+    --text-md: 1rem;
+    --text-sm: 0.875rem;
+    
+    /* 🧱 Rayons et ombrages */
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    /* 🔢 Espacements */
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+}
+
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    font-family: var(--font-body);
+    background-color: var(--color-background);
+}
+
+
+/* ============================================
+   TYPOGRAPHIE
+   ============================================ */
+h1 {
+    font-family: var(--font-title-large);
+    color: var(--color-primary);
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-title-small);
+    color: var(--color-text-light);
+}
+
+.text-indisponible {
+    font-family: var(--font-title-small);
+    font-size: 20px;
+    font-weight: 500;
+    color: gray;
+    margin-top: 5px;
+}
+
+
+/* ============================================
+   LIENS
+   ============================================ */
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+/* ============================================
+   BOUTONS
+   ============================================ */
+
+/* Bouton Primary */
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    transition: all 0.2s ease-in;
+}
+
+.btn-primary:hover {
+    transform: scale(1.01);
+    background-color: var(--color-primary-hover);
+    color: var(--color-white);
+}
+
+/* Bouton Outline Primary */
+.btn-outline-primary {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    transition: all 0.2s ease-in;
+}
+
+.btn-outline-primary:hover {
+    background-color: transparent;
+    color: var(--color-accent-green);
+    border-color: var(--color-accent-green);
+}
+
+/* Bouton Active */
+.btn-active {
+    width: 100%;
+    background-color: var(--color-primary-active);
+    color: var(--color-white);
+    font-weight: bold;
+    text-align: start;
+}
+
+/* Bouton Return */
+.btn-return {
+    border: 1px solid var(--color-primary);
+    transition: all 0.2s ease-in;
+}
+
+.btn-return:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* Bouton Log Out */
+.btn-log-out {
+    width: 100%;
+    color: var(--color-accent-red);
+    text-align: start;
+    transition: all 0.3s ease-in;
+}
+
+.btn-log-out:hover {
+    border: 1px solid var(--color-accent-red);
+    color: var(--color-accent-red);
+}
+
+/* Bouton Show Layout (Mobile) */
+.show-layout-btn {
+    display: none;
+    background-color: transparent;
+    font-size: 35px;
+    margin-left: 10px;
+    border-radius: 10px;
+    transition: all 0.2s ease-in;
+}
+
+.show-layout-btn:hover {
+    margin-top: 10px;
+    margin-left: 10px;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-size: 40px;
+    border: 1px solid var(--color-primary);
+}
+
+
+/* ============================================
+   CARDS
+   ============================================ */
+.card {
+    padding: var(--spacing-md);
+    background-color: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.1);
+}
+
+
+/* ============================================
+   LAYOUT
+   ============================================ */
+
+/* Main Grid Layout */
+main {
+    display: grid;
+    grid-template-columns: 1fr 11fr;
+    height: 100vh;
+}
+
+/* Content Area */
+.content {
+    margin-left: 200px;
+    margin-top: 35px;
+}
+
+
+/* ============================================
+    RESPONSIVE - MOBILE
+============================================ */
+@media (max-width: 990px) {
+    /* Layout passe en mode block */
+    main {
+        display: block;
+    }
+    
+    /* Content sans marge gauche */
+    .content {
+        margin-left: 0;
+        margin-top: 75px;
+    }
+
+    /* Affichage du bouton mobile */
+    .show-layout-btn {
+        display: block;
+    }
+}
