@@ -1,17 +1,20 @@
 FROM php:8.3-apache
 
-# Installe les dépendances système et extensions PHP nécessaires pour Laravel et SQLite
+# Installe les dépendances système
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
     libzip-dev \
-    libsqlite3-dev \  # Ajouté pour SQLite
-    pkg-config \      # Ajouté pour pkg-config
+    libsqlite3-dev \
+    pkg-config \
     unzip \
     git \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_sqlite zip bcmath
+    && rm -rf /var/lib/apt/lists/*
+
+# Configure et installe les extensions PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd pdo pdo_sqlite zip bcmath
 
 # Installe Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
