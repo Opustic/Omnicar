@@ -151,7 +151,7 @@ export const useDepensesStore = defineStore("depenses", () => {
         try {
 
             ui.globalLoading = true
-            const response = await api.get(`/depense/total-annuel/`)
+            const response = await api.get(`/depense/total-annuel`)
             total_annuel_par_categorie.value = response.data
 
         }catch (exception) {
