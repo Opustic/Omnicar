@@ -497,7 +497,7 @@ class VersementController extends Controller
 
         // nombre total de véhicules
         $nb_bus = DB::table("vehicules")->count();
-        $objectif_par_bus = 35000;
+        $objectif_par_bus = Vehicule::OBJECTIF_JOURNALIER;
 
 
 
@@ -564,11 +564,9 @@ class VersementController extends Controller
         $annee = $annee ?? Carbon::now()->year;
         $mois = $mois ?? Carbon::now()->month;
 
-        // objectif fixe par véhicule
-        $objectif_par_bus = 35000;
-
+        
         // Objectif journalier
-        $objectif_journalier = $objectif_par_bus;
+        $objectif_journalier = Vehicule::OBJECTIF_JOURNALIER;
 
         $realise_journalier = DB::table("versements")
             ->where("vehicule_id", $vehicule_id)

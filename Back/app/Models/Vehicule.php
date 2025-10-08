@@ -14,6 +14,9 @@ class Vehicule extends Model
     ];
 
 
+    // objectif journalier
+    public const OBJECTIF_JOURNALIER = 30000;
+
 
 
     // relations
