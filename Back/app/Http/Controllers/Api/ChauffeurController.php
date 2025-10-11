@@ -80,7 +80,7 @@ class ChauffeurController extends Controller
             'telephone' => 'string|max:20',
             'adresse' => 'string|max:255',
             'email' => 'email|max:255',
-            'numero_permis' => 'string|max:255',
+            'numero_permis' => 'nullable|string|max:255',
             'photo' => 'nullable|image|max:2048'
         ]);
 

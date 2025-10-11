@@ -234,7 +234,7 @@ class EquipeController extends Controller
             'telephone_chauffeur' => 'required|string|max:20',
             'adresse_chauffeur' => 'required|string|max:255',
             'email_chauffeur' => 'nullable|email|max:255',
-            'numero_permis_chauffeur' => 'required|string|max:255',
+            'numero_permis_chauffeur' => 'nullable|string|max:255',
             'photo_chauffeur' => 'required|image|max:2048',
 
             'nom_controleur' => 'required|string|max:255',
