@@ -13,7 +13,7 @@
             <input type="text" name="telephone_chauffeur" class="form-control mt-3" placeholder="Téléphone..." required>
             <input type="text" name="adresse_chauffeur" class="form-control mt-3" placeholder="Adresse..." required>
             <input type="email" name="email_chauffeur" class="form-control mt-3" placeholder="Email...">
-            <input type="text" name="numero_permis_chauffeur" class="form-control mt-3" placeholder="Numero du permis" required>
+            <input type="text" name="numero_permis_chauffeur" class="form-control mt-3" placeholder="Numero du permis">
             <input type="file" name="photo_chauffeur" accept="image/*" class="form-control mt-3" required>
             <button class="btn btn-primary mt-3" type="submit">Envoyer</button>
         </form>
