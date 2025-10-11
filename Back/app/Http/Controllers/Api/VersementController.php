@@ -7,6 +7,7 @@ use App\Models\Chauffeur;
 use App\Models\Controleur;
 use App\Models\Vehicule;
 use App\Models\Versement;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -20,6 +21,35 @@ class VersementController extends Controller
         return "<h1>Tu viens de faire un versement</h1>";
     }
 
+
+    // modifier un versement
+    public function update(Request $request, $id) {
+        
+        // validation des données
+        $data = $request->validate([
+            "montant"=>"numeric|min:0",
+        ]);
+
+        // récupération du versement
+        $versement = Versement::findOrFail($id);
+
+
+        // Supprimer les champs vides
+        $data = array_filter($data, function ($value) {
+            return $value !== null && $value !== '';
+        });
+
+        // mise à jour du versement
+        $versement->update($data);
+        
+
+
+        return response()->json([
+            "message"=>"modifié avec succès",
+            "data"=>$versement->fresh()
+        ]);
+
+    }
 
 
     // Faire un versement

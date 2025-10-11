@@ -8,18 +8,67 @@
         </p>
         <p class="date">📅 {{ date }}</p>
         </div>
+
+        <!-- la modification du versement n'est disponible que si et seulement 
+        si le versement est collectif et que la date du versement est récente
+        -->
+        <div v-if="props.label==='Versement' && recentDateStatement && solo" class="modifier">
+            <button class="btn btn-outline-danger" @click="()=>modifier()">
+                <i class="bi bi-pencil-square"></i>
+            </button>
+        </div>
     </div>
 </template>
 
 <script setup>
 
 import { formatCFA } from '@/utils/format';
+import { ref, onMounted } from 'vue';
 
 const props = defineProps({
     label: String,
     amount: String,
+    solo:{type:Boolean, default:false},
+    modifier: Function,
     date: String
 });
+
+// true si la date est de cette semaine, false sinon
+const recentDateStatement = ref(false);
+
+
+// fonction de vérification
+const verifyRecentDate = () => {
+    if (!props.date) {
+        recentDateStatement.value = false;
+        return;
+    }
+
+    const inputDate = new Date(props.date);
+    const today = new Date();
+
+    // Calcule le premier jour (lundi) et le dernier jour (dimanche) de la semaine actuelle
+    const firstDayOfWeek = new Date(today);
+    firstDayOfWeek.setDate(today.getDate() - today.getDay() + 1); // lundi
+    firstDayOfWeek.setHours(0, 0, 0, 0);
+
+    const lastDayOfWeek = new Date(firstDayOfWeek);
+    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6); // dimanche
+    lastDayOfWeek.setHours(23, 59, 59, 999);
+
+    // Met à jour la valeur réactive
+    recentDateStatement.value = inputDate >= firstDayOfWeek && inputDate <= lastDayOfWeek;
+};
+
+
+// au montage du composant
+onMounted(()=> {
+
+    // vérifier si la date est récente
+    verifyRecentDate()
+
+})
+
 </script>
 
 <style scoped>

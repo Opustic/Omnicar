@@ -99,6 +99,41 @@
     </Modale>
 
 
+    <!-- Modale pour modifier un versement -->
+    <Modale
+        title="Modifier versement"
+        :show="showUpdateVersement"
+        @close="showUpdateVersement=false"
+    >
+    
+        <!-- Formulaire pour faire un versement -->
+        <form @submit.prevent="submitUpdateVersement">
+
+            
+
+            <fieldset class="border p-3 rounded-1 mb-3">
+
+                <legend class="fs-6 fw-bold">
+                    Modifier le montant
+                </legend>
+
+                <input type="number" step="1000"  placeholder="Montant ..." class="form-control" name="montant" required>
+                
+            </fieldset>
+
+
+            <button type="submit" class="btn btn-primary">
+                Envoyer
+            </button>
+        
+        </form>
+
+        {{ id_versement_to_modify }}
+
+
+    </Modale>
+
+
 
     <!-- Modale pour assigner une équipe -->
     <Modale
@@ -315,9 +350,9 @@
 
     >
 
-        <h2 class="text-danger">
+        <h4 class="text-danger">
             {{ dialogMessage }}
-        </h2>
+        </h4>
 
         
     </Modale>
@@ -448,6 +483,9 @@
                     label="Versement"
                     :amount="versement?.montant"
                     :date="versement?.created_at.slice(0, 10)"
+                    :modifier="()=>modifier_versement(versement)"
+                    solo="true"
+
                 />
 
             </div>
@@ -793,7 +831,7 @@
                         <div class="card historique">
     
                             <PayementItem
-                                v-for="versement in versements?.slice(0, 5)"
+                                v-for="versement in versements?.slice(0, 6)"
                                     label="Versement"
                                     :key="versement?.date"
                                     :amount="versement?.total"
@@ -1154,6 +1192,7 @@ const showNewArret = ref(false)
 const showCreateTeam = ref(false)
 const showRepairModale = ref(false)
 const showPerfsDetails = ref(false)
+const showUpdateVersement = ref(false)
 
 
 // voir plus de réparations
@@ -1967,7 +2006,18 @@ const setChartOptions_mois = () => {
 }
 
 
+// ==============================
+// MODIFIER UN VERSEMENT
+// ==============================
+const id_versement_to_modify = ref(null)
 
+const modifier_versement = (versement) => {
+
+    showUpdateVersement.value = true
+    showPerfsDetails.value = false
+    id_versement_to_modify.value = versement?.id
+
+}
 
 
 
@@ -2215,7 +2265,7 @@ const submitChangeRepairStatus = async (event) => {
 }
 
 
-
+// Payer un employé
 const submitPayerEmployeToSeePerfs = async (event) => {
 
     const form = event.target
@@ -2229,6 +2279,26 @@ const submitPayerEmployeToSeePerfs = async (event) => {
 
         console.error ("Erreur lors du paiement de l'employé : ", exception)
         toast.error("Une erreur est survenue lors du paiement de l'employé")
+
+    }
+
+}
+
+
+// modifier un versement
+const submitUpdateVersement = async (event) => {
+
+    const form = event.target
+    const formData =  new FormData(form)
+
+    try {
+
+        await versementsStore.update(formData, id_versement_to_modify.value)
+        await versementsStore.fetchAll(props.id)
+
+    }catch (exception) {
+
+        console.error ("Erreur lors de la modification du versement : ", exception)
 
     }
 

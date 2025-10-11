@@ -239,21 +239,7 @@ const smallIconClass = computed(() => {
     background: linear-gradient(135deg, #6B7280 0%, #9CA3AF 100%);
 }
 
-/* Animation d'entrée */
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
-.stat-card {
-    animation: slideInUp 0.5s ease-out;
-}
 
 /* Responsive */
 @media (max-width: 768px) {
