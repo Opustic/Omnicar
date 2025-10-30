@@ -236,3 +236,13 @@ main {
         display: block;
     }
 }
+
+
+/* Force tous les overlays PrimeVue à s’afficher au-dessus des modales */
+.p-dropdown-panel,
+.p-autocomplete-panel,
+.p-overlaypanel,
+.p-multiselect-panel,
+.p-selectpanel {
+    z-index: 9999 !important;
+}

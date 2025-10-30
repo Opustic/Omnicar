@@ -102,6 +102,12 @@ app.use(PrimeVue, {
         options: {
         darkModeSelector: 'none' // Désactive complètement le mode sombre
         }
+    }, 
+    zIndex: {
+        modal: 1100,
+        overlay: 2000,
+        menu: 2100,
+        tooltip: 2200
     }
 })
 

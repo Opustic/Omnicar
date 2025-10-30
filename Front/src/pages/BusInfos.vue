@@ -128,7 +128,6 @@
         
         </form>
 
-        {{ id_versement_to_modify }}
 
 
     </Modale>
@@ -217,6 +216,7 @@
             required
         >
 
+
         <!-- Mécanicien -->
         <select 
             name="mecanicien_id" 
@@ -235,20 +235,24 @@
         </select>
 
 
-        <!-- Description -->
-        <select name="description" id="description" class="form-select mt-2">
+        <!-- Motif -->
+        <Dropdown
+            name="description"
+            v-model="selectedMotif"
+            :options="motifsReparation"
+            optionLabel="name"
+            optionValue="code"
+            placeholder="Motif..."
+            filter
+            showClear
+            appendTo="body"
+            class="w-100 mt-2"
+        />
 
-            <option value="" disabled>-- Sélectionnez un motif --</option>
-            <option 
-                v-for="motif in motifsReparation"
-                :key="motif?.code"
-                :value="motif?.code">{{ motif?.name }}
-            </option>
 
-        </select>
+        <!-- Champ caché pour que FormData inclue la valeur de la description -->
+        <input type="hidden" name="description" :value="selectedMotif" />
 
-
-        
 
         <!-- Bouton -->
         <button type="submit" class="btn btn-primary mt-3 w-100">
@@ -1098,6 +1102,8 @@ import Button  from "primevue/button"
 import Tabs from 'primevue/tabs';
 import TabPanels from 'primevue/tabpanels';
 import TabPanel from 'primevue/tabpanel';
+import Dropdown from 'primevue/dropdown'
+
 
 import { formatCFA } from '@/utils/format';
 import { useDepensesStore } from '@/store/depenses';
@@ -1305,6 +1311,7 @@ const motifsReparation = ref([
     { name: 'Main d\'œuvre pompiste', code: 'Main d\'œuvre pompiste' },
     { name: 'Mémoire alimentation', code: 'Mémoire alimentation' },
     { name: 'Nettoyage des filtres', code: 'Nettoyage des filtres' },
+    { name: 'New Int', code: 'New Int' },
     { name: 'Nez d\'injecteur', code: 'Nez d\'injecteur' },
     { name: 'Patin', code: 'Patin' },
     { name: 'Patin B15', code: 'Patin B15' },
@@ -1313,6 +1320,7 @@ const motifsReparation = ref([
     { name: 'Pochette', code: 'Pochette' },
     { name: 'Pompe à vide', code: 'Pompe à vide' },
     { name: 'Pot graisse', code: 'Pot graisse' },
+    { name: 'Pot…', code: 'Pot…' },
     { name: 'Radiateur', code: 'Radiateur' },
     { name: 'Reniflard', code: 'Reniflard' },
     { name: 'Roclef', code: 'Roclef' },
@@ -1320,6 +1328,7 @@ const motifsReparation = ref([
     { name: 'Roue', code: 'Roue' },
     { name: 'Roulement 6201', code: 'Roulement 6201' },
     { name: 'Roulement de moyeu', code: 'Roulement de moyeu' },
+    { name: 'Roulement volant moteur', code: 'Roulement volant moteur' },
     { name: 'Ruban adhésif', code: 'Ruban adhésif' },
     { name: 'Soudeur', code: 'Soudeur' },
     { name: 'Sous maîtresse', code: 'Sous maîtresse' },
@@ -1330,6 +1339,10 @@ const motifsReparation = ref([
     { name: 'Tige barre stabilisatrice', code: 'Tige barre stabilisatrice' },
     { name: 'Autre', code: 'Autre' }
 ]);
+
+
+
+const selectedMotifReparation = ref(null);
 
 
 const total_par_motifs = computed(()=>arretsStore.total_par_motif)
