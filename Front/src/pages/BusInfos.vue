@@ -238,7 +238,7 @@
         <!-- Motif -->
         <Dropdown
             name="description"
-            v-model="selectedMotif"
+            v-model="selectedMotifReparation"
             :options="motifsReparation"
             optionLabel="name"
             optionValue="code"
@@ -251,7 +251,7 @@
 
 
         <!-- Champ caché pour que FormData inclue la valeur de la description -->
-        <input type="hidden" name="description" :value="selectedMotif" />
+        <input type="hidden" name="description" :value="selectedMotifReparation" />
 
 
         <!-- Bouton -->
