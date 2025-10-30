@@ -34,10 +34,17 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/database \
     && php artisan key:generate \
     && php artisan config:cache \
-    && php artisan route:cache
+    && php artisan route:cache \
+    && php artisan storage:link
 
 # Active le module rewrite pour Apache (utile pour Laravel)
 RUN a2enmod rewrite
+
+# Copie la configuration Apache personnalisée [!]
+COPY docker-backend.conf /etc/apache2/sites-available/000-default.conf
+
+# Active les modules nécessaires [!]
+RUN a2enmod rewrite headers
 
 # Expose le port 80
 EXPOSE 80

@@ -20,6 +20,10 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
+Route::get('/test-log', function () {
+    \Log::info('Test de logging');
+    return response()->json(['message' => 'Log test écrit']);
+});
 
 
 // Groupe de Routes pour les équipes
