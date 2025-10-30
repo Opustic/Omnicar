@@ -99,6 +99,40 @@
     </Modale>
 
 
+    <!-- Modale pour modifier un versement -->
+    <Modale
+        title="Modifier versement"
+        :show="showUpdateVersement"
+        @close="showUpdateVersement=false"
+    >
+    
+        <!-- Formulaire pour faire un versement -->
+        <form @submit.prevent="submitUpdateVersement">
+
+            
+
+            <fieldset class="border p-3 rounded-1 mb-3">
+
+                <legend class="fs-6 fw-bold">
+                    Modifier le montant
+                </legend>
+
+                <input type="number" step="1000"  placeholder="Montant ..." class="form-control" name="montant" required>
+                
+            </fieldset>
+
+
+            <button type="submit" class="btn btn-primary">
+                Envoyer
+            </button>
+        
+        </form>
+
+
+
+    </Modale>
+
+
 
     <!-- Modale pour assigner une équipe -->
     <Modale
@@ -182,6 +216,7 @@
             required
         >
 
+
         <!-- Mécanicien -->
         <select 
             name="mecanicien_id" 
@@ -200,20 +235,24 @@
         </select>
 
 
-        <!-- Description -->
-        <select name="description" id="description" class="form-select mt-2">
+        <!-- Motif -->
+        <Dropdown
+            name="description"
+            v-model="selectedMotifReparation"
+            :options="motifsReparation"
+            optionLabel="name"
+            optionValue="code"
+            placeholder="Motif..."
+            filter
+            showClear
+            appendTo="body"
+            class="w-100 mt-2"
+        />
 
-            <option value="" disabled>-- Sélectionnez un motif --</option>
-            <option 
-                v-for="motif in motifsReparation"
-                :key="motif?.code"
-                :value="motif?.code">{{ motif?.name }}
-            </option>
 
-        </select>
+        <!-- Champ caché pour que FormData inclue la valeur de la description -->
+        <input type="hidden" name="description" :value="selectedMotifReparation" />
 
-
-        
 
         <!-- Bouton -->
         <button type="submit" class="btn btn-primary mt-3 w-100">
@@ -315,9 +354,9 @@
 
     >
 
-        <h2 class="text-danger">
+        <h4 class="text-danger">
             {{ dialogMessage }}
-        </h2>
+        </h4>
 
         
     </Modale>
@@ -448,6 +487,9 @@
                     label="Versement"
                     :amount="versement?.montant"
                     :date="versement?.created_at.slice(0, 10)"
+                    :modifier="()=>modifier_versement(versement)"
+                    solo="true"
+
                 />
 
             </div>
@@ -793,7 +835,7 @@
                         <div class="card historique">
     
                             <PayementItem
-                                v-for="versement in versements?.slice(0, 5)"
+                                v-for="versement in versements?.slice(0, 6)"
                                     label="Versement"
                                     :key="versement?.date"
                                     :amount="versement?.total"
@@ -1060,6 +1102,8 @@ import Button  from "primevue/button"
 import Tabs from 'primevue/tabs';
 import TabPanels from 'primevue/tabpanels';
 import TabPanel from 'primevue/tabpanel';
+import Dropdown from 'primevue/dropdown'
+
 
 import { formatCFA } from '@/utils/format';
 import { useDepensesStore } from '@/store/depenses';
@@ -1154,6 +1198,7 @@ const showNewArret = ref(false)
 const showCreateTeam = ref(false)
 const showRepairModale = ref(false)
 const showPerfsDetails = ref(false)
+const showUpdateVersement = ref(false)
 
 
 // voir plus de réparations
@@ -1266,6 +1311,7 @@ const motifsReparation = ref([
     { name: 'Main d\'œuvre pompiste', code: 'Main d\'œuvre pompiste' },
     { name: 'Mémoire alimentation', code: 'Mémoire alimentation' },
     { name: 'Nettoyage des filtres', code: 'Nettoyage des filtres' },
+    { name: 'New Int', code: 'New Int' },
     { name: 'Nez d\'injecteur', code: 'Nez d\'injecteur' },
     { name: 'Patin', code: 'Patin' },
     { name: 'Patin B15', code: 'Patin B15' },
@@ -1274,6 +1320,7 @@ const motifsReparation = ref([
     { name: 'Pochette', code: 'Pochette' },
     { name: 'Pompe à vide', code: 'Pompe à vide' },
     { name: 'Pot graisse', code: 'Pot graisse' },
+    { name: 'Pot…', code: 'Pot…' },
     { name: 'Radiateur', code: 'Radiateur' },
     { name: 'Reniflard', code: 'Reniflard' },
     { name: 'Roclef', code: 'Roclef' },
@@ -1281,6 +1328,7 @@ const motifsReparation = ref([
     { name: 'Roue', code: 'Roue' },
     { name: 'Roulement 6201', code: 'Roulement 6201' },
     { name: 'Roulement de moyeu', code: 'Roulement de moyeu' },
+    { name: 'Roulement volant moteur', code: 'Roulement volant moteur' },
     { name: 'Ruban adhésif', code: 'Ruban adhésif' },
     { name: 'Soudeur', code: 'Soudeur' },
     { name: 'Sous maîtresse', code: 'Sous maîtresse' },
@@ -1291,6 +1339,10 @@ const motifsReparation = ref([
     { name: 'Tige barre stabilisatrice', code: 'Tige barre stabilisatrice' },
     { name: 'Autre', code: 'Autre' }
 ]);
+
+
+
+const selectedMotifReparation = ref(null);
 
 
 const total_par_motifs = computed(()=>arretsStore.total_par_motif)
@@ -1967,7 +2019,18 @@ const setChartOptions_mois = () => {
 }
 
 
+// ==============================
+// MODIFIER UN VERSEMENT
+// ==============================
+const id_versement_to_modify = ref(null)
 
+const modifier_versement = (versement) => {
+
+    showUpdateVersement.value = true
+    showPerfsDetails.value = false
+    id_versement_to_modify.value = versement?.id
+
+}
 
 
 
@@ -2215,7 +2278,7 @@ const submitChangeRepairStatus = async (event) => {
 }
 
 
-
+// Payer un employé
 const submitPayerEmployeToSeePerfs = async (event) => {
 
     const form = event.target
@@ -2229,6 +2292,26 @@ const submitPayerEmployeToSeePerfs = async (event) => {
 
         console.error ("Erreur lors du paiement de l'employé : ", exception)
         toast.error("Une erreur est survenue lors du paiement de l'employé")
+
+    }
+
+}
+
+
+// modifier un versement
+const submitUpdateVersement = async (event) => {
+
+    const form = event.target
+    const formData =  new FormData(form)
+
+    try {
+
+        await versementsStore.update(formData, id_versement_to_modify.value)
+        await versementsStore.fetchAll(props.id)
+
+    }catch (exception) {
+
+        console.error ("Erreur lors de la modification du versement : ", exception)
 
     }
 

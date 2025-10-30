@@ -96,9 +96,18 @@ app.use(Toast, toastOptions)
 
 
 // utilisation de primevue
-app.use (PrimeVue, {
-    theme:{
-        preset:Aura
+app.use(PrimeVue, {
+    theme: {
+        preset: Aura,
+        options: {
+        darkModeSelector: 'none' // Désactive complètement le mode sombre
+        }
+    }, 
+    zIndex: {
+        modal: 1100,
+        overlay: 2000,
+        menu: 2100,
+        tooltip: 2200
     }
 })
 

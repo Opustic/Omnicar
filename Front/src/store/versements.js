@@ -155,6 +155,27 @@ export const useVersementsStore = defineStore("versements", ()=> {
     }
 
 
+    const update = async (formData, id) => {
+
+        try {
+
+            ui.globalLoading = true
+            const response = await api.put (`/versement/${id}`, formData)
+            toast.success("Modifié avec succès")
+
+        }catch (exception) {
+
+            console.error ("Impossible de modifier ce versement : ", exception)
+            toast.error ("Une erreur est survenue")
+
+        }finally {
+
+            ui.globalLoading = false
+
+        }
+
+    }
+
     // comparaison vs objectifs d'un vehicule
     const fetchComparaisonObjectifsVehicule = async (vehicule_id) => {
 
@@ -950,7 +971,11 @@ export const useVersementsStore = defineStore("versements", ()=> {
 
 
         // faire un versement
-        verser
+        verser,
+
+        
+        // modifier un versement
+        update
 
 
     }

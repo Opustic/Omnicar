@@ -222,6 +222,13 @@ Route::prefix("/versement")->group(function (){
     Route::get("/", [VersementController::class, "index"]);
 
 
+    // modifier un versement
+    Route::put("/{id}", [VersementController::class, "update"]);
+
+    // faire un nouveau versement
+    Route::post("{vehicule_id}/{chauffeur_id}/{controleur_id}/insert", [VersementController::class, "insert"]);
+
+
     // somme des versements du vehicule durant le mois actuel
     Route::get("/{vehicule_id}/total-versement", [VersementController::class, "total_versement_vehicule_mois_actuel"]);
 
@@ -353,9 +360,7 @@ Route::prefix("/versement")->group(function (){
 
 
     
-    // faire un nouveau versement
-    Route::post("{vehicule_id}/{chauffeur_id}/{controleur_id}/insert", [VersementController::class, "insert"]);
-
+    
 
 });
 
