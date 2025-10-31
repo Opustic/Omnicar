@@ -53,58 +53,77 @@ class VersementController extends Controller
 
 
     // Faire un versement
-    public function insert (Request $request, $vehicule_id, $chauffeur_id, $controleur_id) {
-
-
-        $data = $request -> validate([
-            "montant_chauffeur"=>"required|numeric|min:0",
-            "montant_controleur"=>"required|numeric|min:0"
+    public function insert(Request $request, $vehicule_id, $chauffeur_id, $controleur_id)
+    {
+        $data = $request->validate([
+            "montant_chauffeur" => "required|numeric|min:0",
+            "montant_controleur" => "required|numeric|min:0",
+            "date_versement" => "nullable|date"
         ]);
 
-
+        // Déterminer la date du versement
+        $dateVersement = $data['date_versement'] ?? now()->toDateString();
 
         // Vérification de l'existence du vehicule, du chauffeur ou du controleur
         $vehicule = Vehicule::findOrFail($vehicule_id);
-
         $chauffeur = Chauffeur::findOrFail($chauffeur_id);
-
         $controleur = Controleur::findOrFail($controleur_id);
 
+        // Vérifier si un versement pour ce véhicule, ce chauffeur et cette date existe déjà
+        $existsChauffeur = Versement::where('vehicule_id', $vehicule_id)
+            ->where('employe_id', $chauffeur_id)
+            ->where('role', 'chauffeur')
+            ->whereDate('date_versement', $dateVersement)
+            ->exists();
 
+        if ($existsChauffeur) {
+            return response()->json([
+                'message' => "Un versement pour ce chauffeur et ce véhicule existe déjà à la date {$dateVersement}."
+            ], 422);
+        }
 
+        // Vérifier si un versement pour ce véhicule, ce controleur et cette date existe déjà
+        $existsControleur = Versement::where('vehicule_id', $vehicule_id)
+            ->where('employe_id', $controleur_id)
+            ->where('role', 'controleur')
+            ->whereDate('date_versement', $dateVersement)
+            ->exists();
 
-        // versement du chauffeur
+        if ($existsControleur) {
+            return response()->json([
+                'message' => "Un versement pour ce controleur et ce véhicule existe déjà à la date {$dateVersement}."
+            ], 422);
+        }
+
+        // Versement du chauffeur
         $versementChauffeur = Versement::create([
-            "vehicule_id"=>$vehicule_id,
-            "employe_id"=>$chauffeur_id,
-            "role"=>"chauffeur",
-            "montant"=>$data["montant_chauffeur"]
-        ]); 
-
-
-
-
-        // versement du controleur
-        $versementControleur = Versement::create([
-            "vehicule_id"=>$vehicule_id,
-            "employe_id"=>$controleur_id,
-            "role"=>"controleur",
-            "montant"=>$data["montant_controleur"]
+            "vehicule_id" => $vehicule_id,
+            "employe_id" => $chauffeur_id,
+            "role" => "chauffeur",
+            "montant" => $data["montant_chauffeur"],
+            "date_versement" => $dateVersement
         ]);
 
+        // Versement du controleur
+        $versementControleur = Versement::create([
+            "vehicule_id" => $vehicule_id,
+            "employe_id" => $controleur_id,
+            "role" => "controleur",
+            "montant" => $data["montant_controleur"],
+            "date_versement" => $dateVersement
+        ]);
 
-
-        // on retourne la réponse
+        // On retourne la réponse
         return response()->json([
-            "message"=>"versement effectué avec succès",
-            "data"=>[
-                "versement du chauffeur"=>$versementChauffeur,
-                "versement du controleur"=>$versementControleur,
-                "total versement"=>$versementChauffeur->montant+$versementControleur->montant
+            "message" => "Versement effectué avec succès",
+            "data" => [
+                "versement du chauffeur" => $versementChauffeur,
+                "versement du controleur" => $versementControleur,
+                "total versement" => $versementChauffeur->montant + $versementControleur->montant
             ]
         ]);
-
     }
+
 
 
     // versements effectués aujourd'hui
@@ -180,12 +199,12 @@ class VersementController extends Controller
 
         // Récupérer les versements groupés par date
         $versements = Versement::select(
-            DB::raw('DATE(created_at) as date'),
+            DB::raw('DATE(date_versement) as date_versement'),
             DB::raw('SUM(montant) as total')
         )
         ->where("vehicule_id", $vehicule_id)
-        ->groupBy(DB::raw('DATE(created_at)'))
-        ->orderBy(DB::raw('DATE(created_at)'), 'desc')
+        ->groupBy(DB::raw('DATE(date_versement)'))
+        ->orderBy(DB::raw('DATE(date_versement)'), 'desc')
         ->get();
 
 
@@ -879,7 +898,7 @@ class VersementController extends Controller
 
         $data = Versement::where("employe_id", $chauffeur_id)
         ->where("role", "chauffeur")
-        ->orderBy("created_at", "desc")
+        ->orderBy("date_versement", "desc")
         ->get();
 
 
@@ -901,7 +920,7 @@ class VersementController extends Controller
         
         $data = Versement::where("employe_id", $controleur_id)
         ->where("role", "controleur")
-        ->orderBy("created_at", "desc")
+        ->orderBy("date_versement", "desc")
         ->get();
 
 

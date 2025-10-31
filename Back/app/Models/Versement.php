@@ -12,7 +12,8 @@ class Versement extends Model
         "vehicule_id",
         "employe_id",
         "role",
-        "montant"
+        "montant",
+        "date_versement"
     ];
 
 
