@@ -189,29 +189,25 @@ class VersementController extends Controller
     }
 
 
-    // Récupérer les versements d'un vehicule particulier
-    public function getVersementForVehicle($vehicule_id) {
-
-
-        // on vérifie l'existence de ce vehicule
+    // Récupérer les versements d'un véhicule particulier
+    public function getVersementForVehicle($vehicule_id)
+    {
+        // Vérifier que le véhicule existe
         $vehicule = Vehicule::findOrFail($vehicule_id);
-
 
         // Récupérer les versements groupés par date
         $versements = Versement::select(
-            DB::raw('DATE(date_versement) as date_versement'),
+            DB::raw('DATE(COALESCE(date_versement, created_at)) as date_versement'),
             DB::raw('SUM(montant) as total')
         )
-        ->where("vehicule_id", $vehicule_id)
-        ->groupBy(DB::raw('DATE(date_versement)'))
-        ->orderBy(DB::raw('DATE(date_versement)'), 'desc')
+        ->where('vehicule_id', $vehicule_id)
+        ->groupBy(DB::raw('DATE(COALESCE(date_versement, created_at))'))
+        ->orderBy(DB::raw('DATE(COALESCE(date_versement, created_at))'), 'desc')
         ->get();
 
-
-        // on retourne tous les versements
-        return response()->json( $versements);
+        // Retourner la réponse JSON
+        return response()->json($versements);
     }
-
 
 
     // Récupérer les versements du jour
