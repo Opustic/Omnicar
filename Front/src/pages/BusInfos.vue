@@ -67,6 +67,7 @@
         <!-- Formulaire pour faire un versement -->
         <form @submit.prevent="submitVersement">
 
+            <!-- Montant chauffeur -->
             <fieldset class="border p-3 rounded-1 mb-3">
                 <legend class="fs-6 fw-bold">
                     Montant du chauffeur
@@ -78,7 +79,7 @@
             </fieldset>
 
 
-
+            <!-- Montant controleur -->
             <fieldset class="border p-3 rounded-1 mb-3">
                 <legend class="fs-6 fw-bold">
                     Montant du controleur
@@ -88,7 +89,15 @@
                 
             </fieldset>
 
+            <!-- Date du versement -->
+            <fieldset class="border p-3 rounded-1 mb-3">
+                <legend class="fs-6 fw-bold">
+                    Date du versement (optionnelle)
+                </legend>
+                <input type="date" class="form-control" name="date_versement">
+            </fieldset>
 
+            
             <button type="submit" class="btn btn-primary">
                 Envoyer
             </button>
@@ -486,7 +495,7 @@
                     v-for="versement in employeToSeePerfsHistorique"
                     label="Versement"
                     :amount="versement?.montant"
-                    :date="versement?.created_at.slice(0, 10)"
+                    :date="versement?.date_versement.slice(0, 10)"
                     :modifier="()=>modifier_versement(versement)"
                     solo="true"
 
@@ -839,7 +848,7 @@
                                     label="Versement"
                                     :key="versement?.date"
                                     :amount="versement?.total"
-                                    :date="versement?.date"
+                                    :date="versement?.date_versement"
                             />
     
                             <p v-if="versements?.length===0" class="text-danger fs-5">
