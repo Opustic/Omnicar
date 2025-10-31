@@ -197,13 +197,29 @@ class VersementController extends Controller
 
         // Récupérer les versements groupés par date
         $versements = Versement::select(
-            DB::raw('DATE(COALESCE(date_versement, created_at)) as date_versement'),
+            DB::raw("DATE(
+                CASE
+                    WHEN date_versement IS NOT NULL AND date_versement != '' THEN date_versement
+                    ELSE created_at
+                END
+            ) as date_effective"),
             DB::raw('SUM(montant) as total')
         )
         ->where('vehicule_id', $vehicule_id)
-        ->groupBy(DB::raw('DATE(COALESCE(date_versement, created_at))'))
-        ->orderBy(DB::raw('DATE(COALESCE(date_versement, created_at))'), 'desc')
+        ->groupBy(DB::raw("DATE(
+            CASE
+                WHEN date_versement IS NOT NULL AND date_versement != '' THEN date_versement
+                ELSE created_at
+            END
+        )"))
+        ->orderBy(DB::raw("DATE(
+            CASE
+                WHEN date_versement IS NOT NULL AND date_versement != '' THEN date_versement
+                ELSE created_at
+            END
+        )"), 'desc')
         ->get();
+
 
         // Retourner la réponse JSON
         return response()->json($versements);
