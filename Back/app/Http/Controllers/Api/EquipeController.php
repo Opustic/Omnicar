@@ -127,61 +127,57 @@ class EquipeController extends Controller
                 // Gérer le chauffeur
                 if (isset($data['chauffeur_id'])) {
                     $newChauffeurId = $data['chauffeur_id'];
-                    $currentChauffeur = $equipe->chauffeurs->first(); // Récupérer le chauffeur actuel (suppose un seul)
+                    $currentChauffeur = $equipe->chauffeurs->first();
 
-                    if ($currentChauffeur && $currentChauffeur->id == $newChauffeurId) {
-                        // Même chauffeur : ne rien faire
-                        return;
+                    // Vérifier si c'est le même chauffeur
+                    if (!$currentChauffeur || $currentChauffeur->id != $newChauffeurId) {
+                        $newChauffeur = Chauffeur::findOrFail($newChauffeurId);
+
+                        // Vérifier si le nouveau chauffeur est déjà assigné à une autre équipe
+                        if ($newChauffeur->equipe_id && $newChauffeur->equipe_id != $id) {
+                            throw new \Exception("Le chauffeur est déjà assigné à l'équipe {$newChauffeur->equipe_id}.");
+                        }
+
+                        // Dissocier l'ancien chauffeur (s'il existe)
+                        if ($currentChauffeur) {
+                            $currentChauffeur->equipe_id = null;
+                            $currentChauffeur->save();
+                        }
+
+                        // Assigner le nouveau chauffeur
+                        $newChauffeur->equipe_id = $id;
+                        $newChauffeur->save();
                     }
-
-                    $newChauffeur = Chauffeur::findOrFail($newChauffeurId);
-
-                    // Vérifier si le nouveau chauffeur est déjà assigné à une autre équipe
-                    if ($newChauffeur->equipe_id && $newChauffeur->equipe_id != $id) {
-                        throw new \Exception("Le chauffeur est déjà assigné à l'équipe {$newChauffeur->equipe_id}.");
-                    }
-
-                    // Dissocier l'ancien chauffeur (s'il existe)
-                    if ($currentChauffeur) {
-                        $currentChauffeur->equipe_id = null;
-                        $currentChauffeur->save();
-                    }
-
-                    // Assigner le nouveau chauffeur
-                    $newChauffeur->equipe_id = $id;
-                    $newChauffeur->save();
                 }
 
                 // Gérer le contrôleur
                 if (isset($data['controleur_id'])) {
                     $newControleurId = $data['controleur_id'];
-                    $currentControleur = $equipe->controleurs->first(); // Récupérer le contrôleur actuel (suppose un seul)
+                    $currentControleur = $equipe->controleurs->first();
 
-                    if ($currentControleur && $currentControleur->id == $newControleurId) {
-                        // Même contrôleur : ne rien faire
-                        return;
+                    // Vérifier si c'est le même contrôleur
+                    if (!$currentControleur || $currentControleur->id != $newControleurId) {
+                        $newControleur = Controleur::findOrFail($newControleurId);
+
+                        // Vérifier si le nouveau contrôleur est déjà assigné à une autre équipe
+                        if ($newControleur->equipe_id && $newControleur->equipe_id != $id) {
+                            throw new \Exception("Le contrôleur est déjà assigné à l'équipe {$newControleur->equipe_id}.");
+                        }
+
+                        // Dissocier l'ancien contrôleur (s'il existe)
+                        if ($currentControleur) {
+                            $currentControleur->equipe_id = null;
+                            $currentControleur->save();
+                        }
+
+                        // Assigner le nouveau contrôleur
+                        $newControleur->equipe_id = $id;
+                        $newControleur->save();
                     }
-
-                    $newControleur = Controleur::findOrFail($newControleurId);
-
-                    // Vérifier si le nouveau contrôleur est déjà assigné à une autre équipe
-                    if ($newControleur->equipe_id && $newControleur->equipe_id != $id) {
-                        throw new \Exception("Le contrôleur est déjà assigné à l'équipe {$newControleur->equipe_id}.");
-                    }
-
-                    // Dissocier l'ancien contrôleur (s'il existe)
-                    if ($currentControleur) {
-                        $currentControleur->equipe_id = null;
-                        $currentControleur->save();
-                    }
-
-                    // Assigner le nouveau contrôleur
-                    $newControleur->equipe_id = $id;
-                    $newControleur->save();
                 }
             });
 
-            // Recharger l'équipe avec ses relations (si nécessaire)
+            // Recharger l'équipe avec ses relations
             $equipe->refresh()->load(['chauffeurs', 'controleurs']);
 
             return response()->json([
@@ -198,7 +194,6 @@ class EquipeController extends Controller
             ], 500);
         }
     }
-
 
 
     // Assigner une véhicule à une équipe
