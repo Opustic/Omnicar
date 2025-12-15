@@ -1,5 +1,5 @@
 <template>
-    <div class="staff-card" :class="roleClass">
+    <div v-if="props.name" class="staff-card" :class="roleClass">
         <img :src="photo" alt="Photo" class="staff-photo" />
         
         <div class="staff-info">
@@ -13,6 +13,10 @@
             <i class="bi bi-eye fs-3"></i>
         </button>
 
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center staff-card" v-else>
+        <h2>Aucun</h2>
     </div>
 </template>
 
