@@ -844,7 +844,7 @@
                         <div class="card historique">
     
                             <PayementItem
-                                v-for="versement in versements?.slice(0, 6)"
+                                v-for="versement in versements"
                                     label="Versement"
                                     :key="versement?.date"
                                     :amount="versement?.total"

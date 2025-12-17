@@ -202,7 +202,7 @@ class VersementController extends Controller
                     WHEN date_versement IS NOT NULL AND date_versement != '' THEN date_versement
                     ELSE created_at
                 END
-            ) as date_effective"),
+            ) as date_versement"),
             DB::raw('SUM(montant) as total')
         )
         ->where('vehicule_id', $vehicule_id)
